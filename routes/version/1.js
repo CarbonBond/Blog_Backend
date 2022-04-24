@@ -18,4 +18,10 @@ router.get('/users', async function(req, res, next) {
   res.json(allUsers)
 });
 
+router.post('/newpost', async function(req, res, next) {
+
+  
+
+});
+
 module.exports = router;
