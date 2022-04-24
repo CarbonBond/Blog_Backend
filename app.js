@@ -6,7 +6,7 @@ var logger = require('morgan');
 const passport = require('passport');
 
 
-var v1Rounter = require('./routes/version/1');
+var v1Router = require('./routes/version/1');
 const auth = require('./routes/auth')
 
 require('./private/passport');
@@ -22,11 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
-
-
-
-app.use('/api/version/1', passport.authenticate('jwt', {session: false}), v1Rounter);
+app.use('/api/version/1', passport.authenticate('jwt', {session: false}), v1Router);
 app.use('/auth', auth);
 
 // catch 404 and forward to error handler
