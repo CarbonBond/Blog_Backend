@@ -27,7 +27,18 @@ router.get('/user', function(req, res, next) {
 
 router.post('/newpost', async function(req, res, next) {
 
-  res.send(req.user)
+
+  if(
+    typeof req.body.title === 'undefined' 
+    && typeof req.body.content === 'undefined'
+    && typeof req.body.isPublic === 'undefined'
+    && typeof req.body.categories === 'undefined'
+    ) {
+    res.status(406);
+    res.send("Server Error");
+    return;
+  }
+  
   const createPost = await prisma.user.update({
     where: {
       user_id: req.user.user_id
@@ -35,14 +46,21 @@ router.post('/newpost', async function(req, res, next) {
     data: {
       posts: {
         create: {
-          content: "This is the first post",
-          published: true,
-          title: "This is the title",
+          content: req.body.title,
+          published: req.body.isPublic,
+          title: req.body.content,
+          categories: {
+            connect: req.body.categories
+          }
         }
       }
     }
 
   })
+
+  res.status(200);
+  res.send(createPost)
+  return;
 
 });
 
