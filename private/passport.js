@@ -38,11 +38,11 @@ passport.use(new LocalStrategy(
     async function (jwtPayload, cb) {
   
         //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-        try {const user = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
-            user_id: jwtPayload.id
+            user_id: jwtPayload.user_id
             }
-        }) } catch(err) { console.log(err) }
+        })
         if (user) return cb(null, user);
   
         return cb(err);
