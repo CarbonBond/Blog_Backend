@@ -8,7 +8,6 @@ const passport = require('passport');
 
 var v1Rounter = require('./routes/version/1');
 const auth = require('./routes/auth')
-const user = require('./routes/user');
 
 require('./private/passport');
 
@@ -27,9 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/api/version/1', v1Rounter);
+app.use('/api/version/1', passport.authenticate('jwt', {session: false}), v1Rounter);
 app.use('/auth', auth);
-app.use('/user', passport.authenticate('jwt', {session: false}), user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,7 +42,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send(res.locals.error);
+  res.send(err.message);
 });
 
 module.exports = app;

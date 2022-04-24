@@ -10,9 +10,6 @@ const prisma = new PrismaClient()
 /* POST login. */
 router.post('/login', async function (req, res, next) {
 
-
-
-
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({

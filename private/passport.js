@@ -41,6 +41,12 @@ passport.use(new LocalStrategy(
         const user = await prisma.user.findUnique({
             where: {
             user_id: jwtPayload.user_id
+            },
+            select: {
+                email: true,
+                posts: true,
+                name: true,
+                user_id: true
             }
         })
         if (user) return cb(null, user);
