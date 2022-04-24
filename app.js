@@ -3,13 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const passport = require('passport')
+const passport = require('passport');
 
-require('./private/passport')
 
 var v1Rounter = require('./routes/version/1');
 const auth = require('./routes/auth')
 const user = require('./routes/user');
+
+require('./private/passport');
+
+require('dotenv').config()
 
 var app = express();
 
@@ -18,6 +21,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+
+
 
 app.use('/api/version/1', v1Rounter);
 app.use('/auth', auth);
@@ -32,11 +40,11 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get('env') === true//'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(res.locals.error);
 });
 
 module.exports = app;

@@ -4,14 +4,22 @@ const jwt = require('jsonwebtoken');
 const passport = require("passport");
 require('dotenv').config()
 
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
+
 /* POST login. */
-router.post('/login', function (req, res, next) {
+router.post('/login', async function (req, res, next) {
+
+
+
 
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
                 message: 'Something is not right',
-                user : user
+                user : user,
+                err: err,
+                info: info,
             });
         }
 
