@@ -21,11 +21,7 @@ let createCategory = async (req, res, next) => {
   })
 
   res.status(200);
-<<<<<<< HEAD
-  res.send("Created Category")
-=======
   res.json(createCategory.category_id)
->>>>>>> category_crud
 }
 
 let getAllCategories = async (req, res, next) => {
