@@ -1,10 +1,12 @@
 #!/usr/bin/bash
 
-printf "\n Logging in... \n\n"
+clear
+
+printf "\n Logging in..."
 
 TOKEN="`. curl_login.sh $1`"
 
-printf "_____________Get all Categories_____________\n"
+printf "\n\n_____________Get all Categories_____________\n"
 
 curl localhost:3000/api/version/1/categories \
     -s \
@@ -13,10 +15,9 @@ curl localhost:3000/api/version/1/categories \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
-printf "\n\n"
 
 
-printf "_____________Create one Categories_____________\n"
+printf "\n\n_____________Create one Category_____________\n"
 
 
 NEW_CATAGORY_ID=$(curl localhost:3000/api/version/1/category/new \
@@ -27,10 +28,9 @@ NEW_CATAGORY_ID=$(curl localhost:3000/api/version/1/category/new \
     -H "Authorization: Bearer $TOKEN" \
     -d '{"name": "curl_test_creation", "id": 0}')
 
-printf "$NEW_CATAGORY_ID\n\n"
+printf "$NEW_CATAGORY_ID"
 
-printf "_____________Get one Categories_____________\n"
-
+printf "\n\n_____________Get one Category_____________\n"
 
 curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
     -s \
@@ -39,10 +39,8 @@ curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
-printf "\n\n"
 
-
-printf "_____________Update one Categories_____________\n"
+printf "\n\n_____________Update one Category_____________\n"
 
 
 curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
@@ -50,17 +48,32 @@ curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
     -X PUT \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN" \
+    -d '{"name": "curl_test_update", "id": 0}'
+
+printf "\n\n_____________Get Updated Category_____________\n"
+
+curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
-printf "\n\n"
-
-
-printf "_____________Delete one Categories_____________\n"
-
+printf "\n\n_____________Delete one Category_____________\n"
 
 curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
     -s \
     -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN"
+
+printf "\n\n_____________Check Deleted Catgory_____________\n"
+
+curl localhost:3000/api/version/1/category/$NEW_CATAGORY_ID \
+    -s \
+    -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"

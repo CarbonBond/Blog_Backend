@@ -30,7 +30,7 @@ router.get('/categories', category.getAllCategories)
 router.get('/category/:id', category.getCategory)
 
 // Update Category 
-router.put('/category/:id', (req, res, next) => { res.status(501); res.send("Not implemented") } )
+router.put('/category/:id', category.updateCategory )
 
 // Delete Categoty
 router.delete('/category/:id', category.deleteCategory)
