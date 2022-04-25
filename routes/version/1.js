@@ -9,7 +9,17 @@ const app = require('../../app');
 const post = require('./post')
 
 // Get all Post
-router.get('/post/posts', post.getAllPosts)
+router.get('/posts', post.getAllPosts)
+
+// Get one Post
+router.get('/post/:id', post.getPost)
+
+// Update one Post
+router.put('/post/:id', post.updatePost)
+
+// Delete one Post
+router.delete('/post/:id', post.deletePost)
+
 // Create Post
 router.post('/post/new', post.createPost)
 // Delete Posts
