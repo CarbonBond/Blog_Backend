@@ -1,11 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient()
-
-const app = require('../../app');
-
 const post = require('./post')
 const category = require('./category.js')
 
@@ -35,6 +30,7 @@ router.get('/categories', category.getAllCategories)
 router.get('/category/:id', category.getCategory)
 
 // Update Category 
+router.put('/category/:id', category.updateCategory )
 
 // Delete Categoty
 router.delete('/category/:id', category.deleteCategory)

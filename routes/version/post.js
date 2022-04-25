@@ -73,6 +73,7 @@ let getPost = async (req, res, next) => {
 
 let updatePost = async (req, res, next) => {
 
+<<<<<<< HEAD
   if(
     typeof req.body.title === 'undefined' 
     && typeof req.body.content === 'undefined'
@@ -83,6 +84,8 @@ let updatePost = async (req, res, next) => {
     res.send("Server Error");
     return;
   }
+=======
+>>>>>>> category_crud
 
   try {
     const post = await prisma.post.update({
@@ -98,9 +101,15 @@ let updatePost = async (req, res, next) => {
         }
       }
     })
+<<<<<<< HEAD
   } catch {
     res.status(404)
     res.send('Post not found')
+=======
+  } catch (err) {
+    res.status(404)
+    res.send(err)
+>>>>>>> category_crud
     return;
   }
 

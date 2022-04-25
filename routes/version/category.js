@@ -21,7 +21,11 @@ let createCategory = async (req, res, next) => {
   })
 
   res.status(200);
+<<<<<<< HEAD
   res.send("Created Category")
+=======
+  res.json(createCategory.category_id)
+>>>>>>> category_crud
 }
 
 let getAllCategories = async (req, res, next) => {
@@ -54,34 +58,19 @@ let getCategory = async (req, res, next) => {
 
 let updateCategory = async (req, res, next) => {
 
-  if(
-    typeof req.body.title === 'undefined' 
-    && typeof req.body.content === 'undefined'
-    && typeof req.body.isPublic === 'undefined'
-    && typeof req.body.categories === 'undefined'
-    ) {
-    res.status(406);
-    res.send("Server Error");
-    return;
-  }
 
   try {
-    const post = await prisma.category.update({
+    const category = await prisma.category.update({
       where: {
-        post_id: parseInt(req.params.id)
+        category_id: parseInt(req.params.id)
       },
       data: {
-        content: req.body.title,
-        published: req.body.isPublic,
-        title: req.body.content,
-        categories: {
-          connect: req.body.categories
-        }
+        name: req.body.name,
       }
     })
   } catch {
-    res.status(404)
-    res.send('Category not found')
+    res.status(500)
+    res.send('Server Error')
     return;
   }
 
