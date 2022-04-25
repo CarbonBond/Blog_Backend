@@ -19,28 +19,28 @@ let createPost = async (req, res, next) => {
     res.send("Server Error");
     return;
   }
-  
-  const createPost = await prisma.user.update({
-    where: {
-      user_id: req.user.user_id
-    },
-    data: {
-      posts: {
-        create: {
-          content: req.body.title,
-          published: req.body.isPublic,
-          title: req.body.content,
-          categories: {
-            connect: req.body.categories
-          }
+  try {
+    const createPost = await prisma.post.create({
+      data: {
+        content: req.body.title,
+        published: req.body.isPublic,
+        title: req.body.content,
+        author: {
+          connect: { user_id:req.user.user_id }
+        },
+        categories: {
+          connect: req.body.categories
         }
       }
-    }
-
-  })
-
-  res.status(200);
-  res.send(createPost)
+  
+    })
+  
+    res.status(200);
+    res.json(createPost.post_id)
+    return
+  } catch (err) {
+    res.send(err)
+  }
 }
 
 let getAllPosts = async (req, res, next) => {
@@ -56,11 +56,13 @@ let getAllPosts = async (req, res, next) => {
 }
 
 let getPost = async (req, res, next) => {
+
   const post = await prisma.post.findUnique({
     where: {
       post_id: parseInt(req.params.id)
     }
   })
+
   if(post) {
     res.send(post)
     return;
