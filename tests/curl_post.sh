@@ -26,11 +26,11 @@ NEW_POST_ID=$(curl localhost:3000/api/version/1/post/new \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
-    -d '{"title": "Curl Title", "content": "curl_test_creation", "categories": [{"category_id": 3}, {"category_id": 2}]}')
+    -d '{"title": "Curl Title", "published": true, "content": "# curl_test_creation \n- [x] Task 1 \n- [x] Task 2", "categories": [{"category_id": 3}, {"category_id": 2}]}')
 
 printf "$NEW_POST_ID"
 
-printf "\n\n_____________Get one Category_____________\n"
+printf "\n\n_____________Get one Post_____________\n"
 
 curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -s \
@@ -40,7 +40,7 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -H "Authorization: Bearer $TOKEN"
 
 
-printf "\n\n_____________Update one Category_____________\n"
+printf "\n\n_____________Update one Post_____________\n"
 
 
 curl localhost:3000/api/version/1/post/$NEW_POST_ID \
@@ -49,9 +49,9 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
-    -d '{"title": "Curl Updated Title", "content": "curl_test_Update", "categories": [{"category_id": 3}, {"category_id": 2}]}'
+    -d '{"title": "Curl Updated Title", "published": true,"content": "curl_test_Update", "categories": [{"category_id": 3}, {"category_id": 2}]}'
 
-printf "\n\n_____________Get Updated Category_____________\n"
+printf "\n\n_____________Get Updated Post_____________\n"
 
 curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -s \
@@ -60,7 +60,26 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
-printf "\n\n_____________Delete one Category_____________\n"
+printf "\n\n_____________Update post not published_____________\n"
+
+
+curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+    -s \
+    -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN" \
+    -d '{"title": "Curl Updated Title", "published": false, "content": "curl_test_Update", "categories": [{"category_id": 3}, {"category_id": 2}]}'
+
+printf "\n\n_____________Get not published Post_____________\n"
+
+curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN"
+printf "\n\n_____________Delete one Post_____________\n"
 
 curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -s \
@@ -69,7 +88,7 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
-printf "\n\n_____________Check Deleted Catgory_____________\n"
+printf "\n\n_____________Check Deleted Post_____________\n"
 
 curl localhost:3000/api/version/1/post/$NEW_POST_ID \
     -s \

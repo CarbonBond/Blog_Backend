@@ -1,6 +1,4 @@
-
-var express = require('express');
-var router = express.Router();
+var md = require('markdown-it')();
 
 const { PrismaClient } = require('@prisma/client');
 
@@ -8,23 +6,17 @@ const prisma = new PrismaClient()
 
 //Create new post
 let createPost = async (req, res, next) => {
-  
-  if(
-    typeof req.body.title === 'undefined' 
-    && typeof req.body.content === 'undefined'
-    && typeof req.body.isPublic === 'undefined'
-    && typeof req.body.categories === 'undefined'
-    ) {
-    res.status(406);
-    res.send("Server Error");
-    return;
-  }
+
   try {
+
+    mdResult = md.render( req.body.content )
+
     const createPost = await prisma.post.create({
       data: {
-        content: req.body.title,
+        content: mdResult,
         published: req.body.isPublic,
         title: req.body.content,
+        published: req.body.published,
         author: {
           connect: { user_id:req.user.user_id }
         },
@@ -57,19 +49,31 @@ let getAllPosts = async (req, res, next) => {
 
 let getPost = async (req, res, next) => {
 
-  const post = await prisma.post.findUnique({
-    where: {
-      post_id: parseInt(req.params.id)
-    }
-  })
+  try {
 
-  if(post) {
+    
+    const post = await prisma.post.findUnique({
+      where: {
+        post_id: parseInt(req.params.id)
+      }, 
+      rejectOnNotFound: true
+    })
+
+    if (!post.published) {
+      res.status(501)
+      res.send('Post not published')
+      return
+    }
     res.send(post)
     return;
+    
+  } catch (err) {
+    res.status(500)
+    res.send(err)
   }
 
-  res.status(404)
-  res.send('Post not found')
+
+
 }
 
 
@@ -77,14 +81,17 @@ let updatePost = async (req, res, next) => {
 
 
   try {
+
+    mdResult = md.render( req.body.content )
+
     const post = await prisma.post.update({
       where: {
         post_id: parseInt(req.params.id)
       },
       data: {
-        content: req.body.title,
-        published: req.body.isPublic,
-        title: req.body.content,
+        content: mdResult,
+        published: req.body.published,
+        title: req.body.title,
         categories: {
           connect: req.body.categories
         }
