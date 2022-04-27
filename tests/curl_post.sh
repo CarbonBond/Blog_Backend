@@ -8,7 +8,7 @@ TOKEN="`. curl_login.sh $1`"
 
 printf "\n\n_____________Get all Posts_____________\n"
 
-curl localhost:3000/api/version/1/posts \
+curl localhost:3000/api/v/1/public/post \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
@@ -20,7 +20,7 @@ curl localhost:3000/api/version/1/posts \
 printf "\n\n_____________Create one Post_____________\n"
 
 
-NEW_POST_ID=$(curl localhost:3000/api/version/1/post/new \
+NEW_POST_ID=$(curl localhost:3000/api/v/1/post/new \
     -s \
     -X POST \
     -H "Content-Type: application/json" \
@@ -32,18 +32,16 @@ printf "$NEW_POST_ID"
 
 printf "\n\n_____________Get one Post_____________\n"
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/public/post/$NEW_POST_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
 
 
 printf "\n\n_____________Update one Post_____________\n"
 
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/post/$NEW_POST_ID \
     -s \
     -X PUT \
     -H "Content-Type: application/json" \
@@ -53,17 +51,15 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
 
 printf "\n\n_____________Get Updated Post_____________\n"
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/public/post/$NEW_POST_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
 
 printf "\n\n_____________Update post not published_____________\n"
 
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/post/$NEW_POST_ID \
     -s \
     -X PUT \
     -H "Content-Type: application/json" \
@@ -73,15 +69,23 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
 
 printf "\n\n_____________Get not published Post_____________\n"
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/public/post/$NEW_POST_ID \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+
+printf "\n\n_____________Get not published Post Auth_____________\n"
+
+curl localhost:3000/api/v/1/post/up/$NEW_POST_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
+
 printf "\n\n_____________Delete one Post_____________\n"
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/post/$NEW_POST_ID \
     -s \
     -X DELETE \
     -H "Content-Type: application/json" \
@@ -90,7 +94,7 @@ curl localhost:3000/api/version/1/post/$NEW_POST_ID \
 
 printf "\n\n_____________Check Deleted Post_____________\n"
 
-curl localhost:3000/api/version/1/post/$NEW_POST_ID \
+curl localhost:3000/api/v/1/post/$NEW_POST_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \

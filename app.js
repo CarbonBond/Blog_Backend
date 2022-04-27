@@ -6,11 +6,11 @@ var logger = require('morgan');
 const passport = require('passport');
 
 
-var v1Router = require('./routes/version/1');
+var v1Router = require('./routes/version/private');
 const auth = require('./routes/auth')
+const posts = require('./routes/version/public')
 
-require('./private/passport');
-
+require('./controller/passport');
 require('dotenv').config()
 
 var app = express();
@@ -22,7 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/api/version/1', passport.authenticate('jwt', {session: false}), v1Router);
+app.use('/api/v/1/public', posts);
+app.use('/api/v/1', passport.authenticate('jwt', {session: false}), v1Router);
 app.use('/auth', auth);
 
 // catch 404 and forward to error handler

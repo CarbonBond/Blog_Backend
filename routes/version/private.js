@@ -1,24 +1,24 @@
 var express = require('express');
 var router = express.Router();
 
-const post = require('./post')
-const category = require('./category.js')
+const post = require('../../controller/post')
+const category = require('../../controller/category.js')
 
 // Create Post
 router.post('/post/new', post.createPost)
 
 // Get all Post
-router.get('/posts', post.getAllPosts)
+//PUBLIC
 
 // Get one Post
-router.get('/post/:id', post.getPost)
+router.get('/post/up/:id', post.getUnpublishedPost)
+
 
 // Update one Post
 router.put('/post/:id', post.updatePost)
 
 // Delete one Post
 router.delete('/post/:id', post.deletePost)
-
 
 // Create Category
 router.post('/category/new', category.createCategory)

@@ -2,6 +2,7 @@
 EMAIL="cheeseburgerbbgun@gmail.com"
 PASSWORD=$1
 
+
 LOGIN=$(curl localhost:3000/auth/login \
     -s \
     -X POST \

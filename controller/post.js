@@ -47,11 +47,32 @@ let getAllPosts = async (req, res, next) => {
   res.send('Posts not found')
 }
 
+let getUnpublishedPost = async (req, res, next) => {
+
+  try {
+
+    const post = await prisma.post.findUnique({
+      where: {
+        post_id: parseInt(req.params.id)
+      }, 
+      rejectOnNotFound: true
+    })
+
+    res.send(post)
+    return;
+    
+  } catch (err) {
+    res.status(500)
+    res.send(err)
+  }
+
+}
+
+
 let getPost = async (req, res, next) => {
 
   try {
 
-    
     const post = await prisma.post.findUnique({
       where: {
         post_id: parseInt(req.params.id)
@@ -68,11 +89,9 @@ let getPost = async (req, res, next) => {
     return;
     
   } catch (err) {
-    res.status(500)
-    res.send(err)
+    res.status(404)
+    res.send(`Post not found`)
   }
-
-
 
 }
 
@@ -124,4 +143,4 @@ let deletePost = async (req, res, next) => {
   res.send('Deleted')
 }
   
-module.exports = { createPost, getAllPosts, getPost, deletePost, updatePost};
+module.exports = { createPost, getAllPosts, getPost, deletePost, updatePost, getUnpublishedPost};
