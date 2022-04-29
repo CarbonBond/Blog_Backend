@@ -19,7 +19,7 @@ GET_ALL=$(curl localhost:3000/api/v/1/public/categories \
     -H "Authorization: Bearer $TOKEN")
 printf "$GET_ALL"
 
-if [[ $GET_ALL != '' ]]
+if [[ $GET_ALL != '[]' ]]
 then
     printf "\n${GREEN} Success ${NC}"
 else 
