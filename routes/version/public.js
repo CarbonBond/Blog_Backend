@@ -5,10 +5,10 @@ const category = require('../../controller/category')
 const post = require('../../controller/post')
 
 // Get all Post
-router.get('/post', post.getAllPosts)
+router.get('/post', post.getAllPublishedPosts)
 
 // Get one Post
-router.get('/post/:id', post.getPost)
+router.get('/post/:id', post.getPublishedPost)
 
 // Get all Categories
 router.get('/categories', category.getAllCategories)

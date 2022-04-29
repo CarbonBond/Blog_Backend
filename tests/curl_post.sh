@@ -6,9 +6,18 @@ printf "\n Logging in..."
 
 TOKEN="`. curl_login.sh $1`"
 
-printf "\n\n_____________Get all Posts_____________\n"
+printf "\n\n_____________Get all Public Posts_____________\n"
 
 curl localhost:3000/api/v/1/public/post \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN"
+
+printf "\n\n_____________Get all Posts_____________\n"
+
+curl localhost:3000/api/v/1/post \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
@@ -76,7 +85,7 @@ curl localhost:3000/api/v/1/public/post/$NEW_POST_ID \
 
 printf "\n\n_____________Get not published Post Auth_____________\n"
 
-curl localhost:3000/api/v/1/post/up/$NEW_POST_ID \
+curl localhost:3000/api/v/1/post/$NEW_POST_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \

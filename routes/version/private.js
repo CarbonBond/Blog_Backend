@@ -8,11 +8,11 @@ const category = require('../../controller/category.js')
 router.post('/post/new', post.createPost)
 
 // Get all Post
-//PUBLIC
+router.get('/post/', post.getAllPosts)
+
 
 // Get one Post
-router.get('/post/up/:id', post.getUnpublishedPost)
-
+router.get('/post/:id', post.getPost)
 
 // Update one Post
 router.put('/post/:id', post.updatePost)

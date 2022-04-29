@@ -4,6 +4,8 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient()
 
+const { buildSearchObject }= require('./utility')
+
 //Create new post
 let createPost = async (req, res, next) => {
 
@@ -35,19 +37,58 @@ let createPost = async (req, res, next) => {
   }
 }
 
-let getAllPosts = async (req, res, next) => {
-  const allPosts = await prisma.post.findMany()
+let getAllPublishedPosts = async (req, res, next) => {
 
-  if(allPosts) {
+
+  try{
+    
+    let publishedObject = req.query;
+
+    if(typeof publishedObject !== 'object') publishedObject = {};
+
+
+
+    if (typeof publishedObject.search === 'undefined') {
+      publishedObject.search =  { published: true }
+    } else {
+      publishedObject.search.published = true;
+    }
+
+    let searchQuery = buildSearchObject(publishedObject)
+
+    const allPosts = await prisma.post.findMany(searchQuery)
+
     res.send(allPosts)
     return;
+
   }
-  
-  res.status(500)
-  res.send('Posts not found')
+  catch(err) {
+
+    res.status(500)
+    res.send(`Categories not found: ${err}` )
+  }
 }
 
-let getUnpublishedPost = async (req, res, next) => {
+let getAllPosts = async (req, res, next) => {
+
+  try{
+
+    let searchQuery = buildSearchObject(req.query)
+
+    const allPosts = await prisma.post.findMany(searchQuery)
+
+    res.send(allPosts)
+    return;
+
+  }
+  catch(err) {
+
+    res.status(500)
+    res.send(`Categories not found: ${err}` )
+  }
+}
+
+let getPost = async (req, res, next) => {
 
   try {
 
@@ -69,7 +110,7 @@ let getUnpublishedPost = async (req, res, next) => {
 }
 
 
-let getPost = async (req, res, next) => {
+let getPublishedPost = async (req, res, next) => {
 
   try {
 
@@ -143,4 +184,4 @@ let deletePost = async (req, res, next) => {
   res.send('Deleted')
 }
   
-module.exports = { createPost, getAllPosts, getPost, deletePost, updatePost, getUnpublishedPost};
+module.exports = { createPost, getAllPublishedPosts, getAllPosts, getPost, deletePost, updatePost, getPublishedPost};
