@@ -3,6 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient()
 
+const { buildSearchObject } = require('./utility')
+
 //Create new Category
 let createCategory = async (req, res, next) => {
   
@@ -28,38 +30,22 @@ let getAllCategories = async (req, res, next) => {
 
 
   try{
-  
-    let searchQuery = {}
 
+    searchObject = req.query;
 
-    if( req.query !== {} ) { 
-
-      if(typeof req.query.search !== 'undefined') {
-        searchQuery.where = {};
-        for (const property in req.query.search) {
-          if(property === "id") {
-            searchQuery.where['category_id'] = parseInt(req.query.search[property])
-            
-          } else {
-            searchQuery.where[property] = {
-              contains: req.query.search[property]
-            }
-          }
-        }
-      } 
-
-      if(typeof req.query.limit !== 'undefined') {
-        searchQuery.select = {};
-        if(typeof req.query.limit === 'object') {
-          for (const item of req.query.limit) {
-            searchQuery.select[item] = true
-          }
-        } else {
-          searchQuery.select[req.query.limit] = true
-        }
-      }
+    
+    if( searchObject.search && typeof searchObject.search.id !== undefined) {
+      searchObject.search.category_id =  searchObject.search.id;
+      delete  searchObject.search.id;
     }
-        
+
+    if(searchObject.limit && typeof searchObject.where.id !== undefined) {
+      searchObject.limit.category_id =  searchObject.limit.id;
+      delete  searchObject.limit.id;
+    }
+
+
+    let searchQuery = buildSearchObject(searchObject)
 
     const allCategories = await prisma.category.findMany(searchQuery)
 

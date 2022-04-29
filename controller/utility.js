@@ -4,47 +4,59 @@ const buildSearchObject = (queryObj) => {
 
     if( queryObj !== {} ) { 
 
-      if(typeof queryObj.search !== 'undefined') {
-        searchQuery.where = {};
-        for (const property in queryObj.search) {
-          
-          switch (typeof queryObj.search[property]) {
+        if(typeof queryObj.search !== 'undefined') searchQuery.where = buildSearch(queryObj.search);
 
-            case 'string':
-                searchQuery.where[property] = {
-                    contains: queryObj.search[property]
-                }
-            break;
-    
-            case 'boolean':
-            case 'number':
+        if(typeof queryObj.limit !== 'undefined') searchQuery.select = buildLimit(queryObj.limit);
 
-                if(property === "id") {
-                    searchQuery.where['post_id'] = parseInt(queryObj.search[property])  
-                } else {
-                    searchQuery.where[property] = {
-                        equals: queryObj.search[property]
-                    }
-                }
-            break;
-          }
-        }
-      } 
-
-      if(typeof queryObj.limit !== 'undefined') {
-        searchQuery.select = {};
-        if(typeof queryObj.limit === 'object') {
-          for (const item of queryObj.limit) {
-            searchQuery.select[item] = true
-          }
-        } else {
-          searchQuery.select[queryObj.limit] = true
-        }
-      }
     }
 
-
     return searchQuery
+}
+
+const buildLimit = (limitObj) => {
+
+    limit = {};
+
+    if(typeof limitObj === 'object') {
+        for (const item of limitObj) {
+            limit[item] = true
+        }
+    } else {
+        limit[limitObj] = true
+    }
+    return limit
+}
+
+const buildSearch = (searchObj) => {
+    let search = {};
+    for (const property in searchObj) {
+      
+        if(!Number.isNaN(parseInt(searchObj[property])) ) {
+            searchObj[property] = parseInt(searchObj[property])
+        }
+
+      switch (typeof searchObj[property]) {
+
+        case 'string':
+            search[property] = {
+                contains: searchObj[property]
+            }
+        break;
+
+        case 'boolean':
+        case 'number':
+
+            if(property === "id") {
+                search['post_id'] = parseInt(searchObj[property])  
+            } else {
+                search[property] = {
+                    equals: searchObj[property]
+                }
+            }
+        break;
+      }
+    }
+    return search
 }
 
 module.exports = { buildSearchObject }
