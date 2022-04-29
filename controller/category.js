@@ -105,6 +105,7 @@ let updateCategory = async (req, res, next) => {
       },
       data: {
         name: req.body.name,
+        category_id: req.body.category_id
       }
     })
   } catch {

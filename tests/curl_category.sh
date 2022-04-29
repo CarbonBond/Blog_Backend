@@ -1,23 +1,51 @@
 #!/usr/bin/bash
-
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+YELLOW='\033[1;33m'
 clear
 
 printf "\n Logging in..."
 
 TOKEN="`. curl_login.sh $1`"
 
-printf "\n\n_____________Get all Categories_____________\n"
+printf "\n\n${YELLOW}_____________Get all Categories_____________${NC}\n"
 
-curl localhost:3000/api/v/1/public/categories \
+GET_ALL=$(curl localhost:3000/api/v/1/public/categories \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+    -H "Authorization: Bearer $TOKEN")
+printf "$GET_ALL"
 
+if [[ $GET_ALL != '' ]]
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
 
+printf "\n\n${YELLOW}_____________Get Categories with name containing WebAssembly, ID = 135_____________${NC}\n"
 
-printf "\n\n_____________Create one Category_____________\n"
+CHECK_SEARCH=$(curl 'localhost:3000/api/v/1/public/categories?search[name]=WebAssembly&search[id]=135' \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN")
+
+printf "$CHECK_SEARCH"
+
+if [[ $CHECK_SEARCH = '[{"category_id":135,"name":"WebAssembly"}]' ]]
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
+ 
+
+printf "\n\n${YELLOW}_____________Create one Category_____________${NC}\n"
 
 
 NEW_CATAGORY_ID=$(curl localhost:3000/api/v/1/category/new \
@@ -26,65 +54,110 @@ NEW_CATAGORY_ID=$(curl localhost:3000/api/v/1/category/new \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
-    -d '{"name": "curl_test_creation", "id": 0}')
+    -d '{"name": "curl_test_creation"}')
 
 printf "$NEW_CATAGORY_ID"
 
-printf "\n\n_____________Get one Category_____________\n"
+if [[ $NEW_CATAGORY_ID -gt 0 ]]
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
 
-curl localhost:3000/api/v/1/public/category/$NEW_CATAGORY_ID \
+printf "\n\n${YELLOW}_____________Get created Category_____________${NC}\n"
+
+GET_CATEGORY=$(curl localhost:3000/api/v/1/public/category/$NEW_CATAGORY_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+    -H "Authorization: Bearer $TOKEN")
+printf "$GET_CATEGORY"
+
+GET_NAME_CREATED="`. json_ID.sh $GET_CATEGORY name`"
+
+if [[ "curl_test_creation" = $GET_NAME_CREATED ]] #json_ID will return a comma if present
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
+
+printf "\n\n${YELLOW}_____________Update one Category_____________${NC}\n"
 
 
-printf "\n\n_____________Update one Category_____________\n"
-
-
-curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
+CHECK_UPDATED=$(curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
     -s \
     -X PUT \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
-    -d '{"name": "curl_test_update", "id": 0}'
+    -d '{"name": "curl_test_update", "id": 0}')
 
-printf "\n\n_____________Get Updated Category_____________\n"
+printf "$CHECK_UPDATED"
 
-curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
+if [[ "updated" = $CHECK_UPDATED ]] #json_ID will return a comma if present
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
+
+
+
+printf "\n\n${YELLOW}_____________Get Updated Category_____________${NC}\n"
+
+GET_UPDATED=$(curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+    -H "Authorization: Bearer $TOKEN")
 
-printf "\n\n_____________Get Categories with name containing test, ID = 2_____________\n"
+printf "$GET_UPDATED"
 
-curl 'localhost:3000/api/v/1/public/categories?search[name]=test&search[id]=2' \
-    -s \
-    -X GET \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+GET_UPDATED_NAME="`. json_ID.sh $GET_UPDATED name`"
+if [[ "curl_test_update" = $GET_UPDATED_NAME ]] #json_ID will return a comma if present
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
 
-printf "\n\n_____________Delete one Category_____________\n"
+printf "\n\n${YELLOW}_____________Delete one Category_____________${NC}\n"
 
-curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
+CHECK_DELETE=$(curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
     -s \
     -X DELETE \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+    -H "Authorization: Bearer $TOKEN")
 
-printf "\n\n_____________Check Deleted Catgory_____________\n"
+printf "$CHECK_DELETE"
+if [[ "Deleted" = $CHECK_DELETE ]] #json_ID will return a comma if present
+then
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
 
-curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
+printf "\n\n${YELLOW}_____________Check Deleted Catgory_____________${NC}\n"
+
+CHECK_DELETED=$( curl localhost:3000/api/v/1/category/$NEW_CATAGORY_ID \
     -s \
     -X GET \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer $TOKEN"
+    -H "Authorization: Bearer $TOKEN" )
+
+printf "$CHECK_DELETED"
+
+if [[ $CHECK_DELETED = "Category not found" ]]
+then 
+    printf "\n${GREEN} Success ${NC}"
+else 
+    printf "\n${RED}FAILED${NC}"
+fi
 
 printf "\n\n"
