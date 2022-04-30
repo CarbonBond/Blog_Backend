@@ -33,7 +33,6 @@ let getAllCategories = async (req, res, next) => {
 
     searchObject = req.query;
 
-    
     if( searchObject.search && typeof searchObject.search.id !== undefined) {
       searchObject.search.category_id =  searchObject.search.id;
       delete  searchObject.search.id;

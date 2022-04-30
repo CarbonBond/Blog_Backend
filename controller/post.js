@@ -44,9 +44,16 @@ let getAllPublishedPosts = async (req, res, next) => {
     
     let publishedObject = req.query;
 
-    if(typeof publishedObject !== 'object') publishedObject = {};
 
+    if( publishedObject.search && typeof publishedObject.search.id !== undefined) {
+      publishedObject.search.post_id =  publishedObject.search.id;
+      delete  publishedObject.search.id;
+    }
 
+    if(publishedObject.limit && typeof publishedObject.where.id !== undefined) {
+      publishedObject.limit.post_id =  publishedObject.limit.id;
+      delete  publishedObject.limit.id;
+    }
 
     if (typeof publishedObject.search === 'undefined') {
       publishedObject.search =  { published: true }
