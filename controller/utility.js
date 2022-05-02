@@ -1,16 +1,30 @@
-const buildSearchObject = (queryObj) => {
+const _ = require('lodash');
+
+const buildSearchObject = (queryObjSrc, idName ) => {
     
+    let queryObj = _.cloneDeep(queryObjSrc)
+
     let searchQuery = {}
 
-    if( queryObj !== {} ) { 
+    updateIdFeild(queryObj, idName)
 
-        if(typeof queryObj.search !== 'undefined') searchQuery.where = buildSearch(queryObj.search);
+    if(typeof queryObj.search !== 'undefined') searchQuery.where = buildSearch(queryObj.search);
 
-        if(typeof queryObj.limit !== 'undefined') searchQuery.select = buildLimit(queryObj.limit);
-
-    }
+    if(typeof queryObj.limit !== 'undefined') searchQuery.select = buildLimit(queryObj.limit);
 
     return searchQuery
+}
+
+const updateIdFeild = (queryObj, idName) => {
+    if( queryObj.search && typeof queryObj.search.id !== undefined) {
+        queryObj.search[`${idName}_id`] =  queryObj.search.id;
+        delete  queryObj.search.id;
+      }
+  
+      if(queryObj.limit && typeof queryObj.limit.id !== undefined) {
+        queryObj.limit[`${idName}_id`]=  queryObj.limit.id;
+        delete  queryObj.limit.id;
+      }
 }
 
 const buildLimit = (limitObj) => {

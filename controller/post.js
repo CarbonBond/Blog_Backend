@@ -1,4 +1,4 @@
-var md = require('markdown-it')();
+const md = require('markdown-it')();
 
 const { PrismaClient } = require('@prisma/client');
 
@@ -41,27 +41,14 @@ let getAllPublishedPosts = async (req, res, next) => {
 
 
   try{
-    
-    let publishedObject = req.query;
 
-
-    if( publishedObject.search && typeof publishedObject.search.id !== undefined) {
-      publishedObject.search.post_id =  publishedObject.search.id;
-      delete  publishedObject.search.id;
-    }
-
-    if(publishedObject.limit && typeof publishedObject.where.id !== undefined) {
-      publishedObject.limit.post_id =  publishedObject.limit.id;
-      delete  publishedObject.limit.id;
-    }
-
-    if (typeof publishedObject.search === 'undefined') {
-      publishedObject.search =  { published: true }
+    if (typeof req.query.search === 'undefined') {
+      req.query.search =  { published: true }
     } else {
-      publishedObject.search.published = true;
+      req.query.search.published = true;
     }
 
-    let searchQuery = buildSearchObject(publishedObject)
+    let searchQuery = buildSearchObject(req.query, "post")
 
     const allPosts = await prisma.post.findMany(searchQuery)
 
@@ -70,9 +57,8 @@ let getAllPublishedPosts = async (req, res, next) => {
 
   }
   catch(err) {
-
     res.status(500)
-    res.send(`Categories not found: ${err}` )
+    res.send(`Posts not found: ${err}` )
   }
 }
 
@@ -80,7 +66,7 @@ let getAllPosts = async (req, res, next) => {
 
   try{
 
-    let searchQuery = buildSearchObject(req.query)
+    let searchQuery = buildSearchObject(req.query, "post")
 
     const allPosts = await prisma.post.findMany(searchQuery)
 
@@ -91,7 +77,7 @@ let getAllPosts = async (req, res, next) => {
   catch(err) {
 
     res.status(500)
-    res.send(`Categories not found: ${err}` )
+    res.send(`Posts not found: ${err}` )
   }
 }
 
@@ -110,8 +96,14 @@ let getPost = async (req, res, next) => {
     return;
     
   } catch (err) {
+    if(err.name && err.name == "NotFoundError") {
+      res.status(404)
+      res.send("Post not found")
+      return
+    }
     res.status(500)
-    res.send(err)
+    res.send("Server Err")
+    return
   }
 
 }

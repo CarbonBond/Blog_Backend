@@ -31,20 +31,7 @@ let getAllCategories = async (req, res, next) => {
 
   try{
 
-    searchObject = req.query;
-
-    if( searchObject.search && typeof searchObject.search.id !== undefined) {
-      searchObject.search.category_id =  searchObject.search.id;
-      delete  searchObject.search.id;
-    }
-
-    if(searchObject.limit && typeof searchObject.where.id !== undefined) {
-      searchObject.limit.category_id =  searchObject.limit.id;
-      delete  searchObject.limit.id;
-    }
-
-
-    let searchQuery = buildSearchObject(searchObject)
+    let searchQuery = buildSearchObject(req.query, "category")
 
     const allCategories = await prisma.category.findMany(searchQuery)
 
