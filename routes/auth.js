@@ -31,4 +31,9 @@ router.post('/login', async function (req, res, next) {
     })(req, res);
 });
 
+// Get User Logged in
+router.get('/user', function(req, res, next) {
+    res.send(req.user);
+  });
+
 module.exports = router;
