@@ -24,6 +24,14 @@ curl localhost:3000/api/v/1/post \
     -H "Accept: application/json" \
     -H "Authorization: Bearer $TOKEN"
 
+printf "\n\n_____________ Post: Limit Name _____________\n"
+
+curl 'localhost:3000/api/v/1/post?limit=title' \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer $TOKEN"
 
 
 printf "\n\n_____________Create one Post_____________\n"
