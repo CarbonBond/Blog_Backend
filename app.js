@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
-
+const cors = require('cors');
 
 var v1Router = require('./routes/version/private');
 const auth = require('./routes/auth')
@@ -15,6 +15,10 @@ require('dotenv').config()
 
 var app = express();
 
+
+app.use(cors({
+  origin: process.env.COR_URL
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
