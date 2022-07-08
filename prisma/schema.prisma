@@ -17,13 +17,13 @@ model Post {
   title      String
   author_id  Int?
   author     User?      @relation(fields: [author_id], references: [user_id])
-  categories Category[] @relation(references: [category_id])
+  categories Category[]
 }
 
 model Category {
   category_id    Int      @id @default(autoincrement())
   name  String
-  posts Post[]  @relation(references: [post_id])
+  posts Post[]  
 }
 
 model User {
