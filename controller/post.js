@@ -1,4 +1,5 @@
 const md = require('markdown-it')();
+const _ = require('lodash');
 
 const { PrismaClient } = require('@prisma/client');
 
@@ -11,13 +12,12 @@ let createPost = async (req, res, next) => {
 
   try {
 
-    mdResult = md.render( req.body.content )
 
     const createPost = await prisma.post.create({
       data: {
-        content: mdResult,
+        content: req.body.content,
         published: req.body.isPublic,
-        title: req.body.content,
+        title: req.body.title,
         published: req.body.published,
         author: {
           connect: { user_id:req.user.user_id }
@@ -52,6 +52,13 @@ let getAllPublishedPosts = async (req, res, next) => {
 
     const allPosts = await prisma.post.findMany(searchQuery)
 
+
+    allPosts.forEach(post => {
+      if(post.content) {
+        post.content = md.render(post.content)
+      }
+    })
+
     res.send(allPosts)
     return;
 
@@ -69,6 +76,13 @@ let getAllPosts = async (req, res, next) => {
     let searchQuery = buildSearchObject(req.query, "post")
 
     const allPosts = await prisma.post.findMany(searchQuery)
+    
+
+    allPosts.forEach(post => {
+      if(post.content) {
+        post.content = md.render(post.content)
+      }
+    })
 
     res.send(allPosts)
     return;
@@ -78,6 +92,31 @@ let getAllPosts = async (req, res, next) => {
 
     res.status(500)
     res.send(`Posts not found: ${err}` )
+  }
+}
+
+let getMarkDownPost = async (req, res, next) => {
+
+  try {
+
+    const post = await prisma.post.findUnique({
+      where: {
+        post_id: parseInt(req.params.id)
+      }, 
+      rejectOnNotFound: true
+    })
+    res.send(post)
+    return;
+    
+  } catch (err) {
+    if(err.name && err.name == "NotFoundError") {
+      res.status(404)
+      res.send("Post not found")
+      return
+    }
+    res.status(500)
+    res.send("Server Err")
+    return
   }
 }
 
@@ -91,7 +130,7 @@ let getPost = async (req, res, next) => {
       }, 
       rejectOnNotFound: true
     })
-
+    post.content = md.render(post.content)
     res.send(post)
     return;
     
@@ -125,6 +164,7 @@ let getPublishedPost = async (req, res, next) => {
       res.send('Post not published')
       return
     }
+    post.content = md.render(post.content)
     res.send(post)
     return;
     
@@ -138,17 +178,14 @@ let getPublishedPost = async (req, res, next) => {
 
 let updatePost = async (req, res, next) => {
 
-
   try {
-
-    mdResult = md.render( req.body.content )
 
     const post = await prisma.post.update({
       where: {
         post_id: parseInt(req.params.id)
       },
       data: {
-        content: mdResult,
+        content: req.body.content,
         published: req.body.published,
         title: req.body.title,
         categories: {
@@ -183,4 +220,4 @@ let deletePost = async (req, res, next) => {
   res.send('Deleted')
 }
   
-module.exports = { createPost, getAllPublishedPosts, getAllPosts, getPost, deletePost, updatePost, getPublishedPost};
+module.exports = { createPost, getAllPublishedPosts, getAllPosts, getPost, getMarkDownPost, deletePost, updatePost, getPublishedPost};

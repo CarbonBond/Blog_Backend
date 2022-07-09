@@ -54,6 +54,14 @@ curl localhost:3000/api/v/1/public/post/$NEW_POST_ID \
     -X GET \
     -H "Content-Type: application/json" \
 
+printf "\n\n_____________Get one Post MARKDOWN_____________\n"
+
+curl localhost:3000/api/v/1/post/$NEW_POST_ID/md \
+    -s \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $TOKEN"
+
 
 printf "\n\n_____________Update one Post_____________\n"
 

@@ -11,6 +11,10 @@ router.get('/post/', post.getAllPosts)
 // Get one Post
 router.get('/post/:id', post.getPost)
 
+// Get Markdown Post
+router.get('/post/:id/md', post.getMarkDownPost)
+
+
 // Create Post
 router.post('/post/new', post.createPost)
 
