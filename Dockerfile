@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-run npm run fixPrisma
+RUN npm run fixPrisma
 
 ENV PORT=80
 
